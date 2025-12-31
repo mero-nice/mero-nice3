@@ -4,48 +4,46 @@
 <meta charset="UTF-8">
 <title>هدية ميرو</title>
 <style>
-html, body {
+body {
     margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #1a1a1a, #4b0082);
     color:white;
     text-align:center;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    width: 375px;   /* ثابت بحجم شاشة تلفون */
+    height: 667px;  /* ثابت بحجم شاشة تلفون */
+    overflow:hidden;
 }
 
 /* صفحة الباسورد */
 .login-box {
-    position: absolute;
-    top:50%;
-    left:50%;
-    transform: translate(-50%,-50%);
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    padding:40px 60px;
-    border-radius:20px;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-    max-width:500px;
+    padding:20px 30px;
+    border-radius:15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    max-width:100%;
     text-align:center;
-    z-index:5;
 }
 
 .login-box h1 {
-    font-size: 36px;
-    margin-bottom:20px;
+    font-size: 28px;
+    margin-bottom:15px;
     color: gold;
     text-shadow: 2px 2px 8px #000;
 }
 
 input, button {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
+    padding: 10px;
+    margin-bottom: 15px;
     border:none;
     border-radius:10px;
-    font-size:16px;
+    font-size:14px;
 }
 
 button {
@@ -71,17 +69,13 @@ button:hover {
 #memories {
     display:none;
     text-align:center;
-    position: absolute;
-    top:50%;
-    left:50%;
-    transform: translate(-50%,-50%);
-    z-index:5;
+    margin-top:20px;
 }
 
 #memories button {
-    padding: 20px 50px;
-    font-size: 24px;
-    border-radius: 15px;
+    padding: 15px 40px;
+    font-size: 20px;
+    border-radius: 12px;
     background: #ffeb3b;
     color:#333;
     font-weight:bold;
@@ -92,98 +86,90 @@ button:hover {
 }
 
 #memories button:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
     background: gold;
 }
 
 /* المعرض */
 #gallery {
     display:none;
-    position: fixed; /* ثابت */
-    top:0;
-    left:0;
-    width: 100vw;
-    height: 100vh;
+    position: relative;
+    width: 100%;
+    height: 100%;
     text-align: center;
-    z-index:2;
+    z-index:1;
 }
 
 #gallery img {
-    width: 100vw;
-    height: 100vh;
-    object-fit: contain; /* يحافظ على النسب بدون قص */
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     cursor: pointer;
     user-select: none;
 }
 
 /* النص تحت الصورة */
 #caption {
+    font-size: 14px; /* حجم أصغر */
+    color: #ffeb3b;
+    background: rgba(0,0,0,0.6);
+    padding: 8px 12px;
+    border-radius: 10px;
     position: absolute;
-    bottom: 80px;
+    bottom: 40px; /* مرتفع عن أسفل الصورة */
     left: 50%;
     transform: translateX(-50%);
-    font-size: 16px;
-    color: #ffeb3b;
-    background: rgba(0,0,0,0.5);
-    padding: 8px 16px;
-    border-radius: 12px;
     max-width: 90%;
     word-wrap: break-word;
     white-space: normal;
-    z-index:3;
 }
 
 /* صفحة وداع */
 #goodbye {
     display:none;
-    position: fixed;
-    top:0;
-    left:0;
-    width:100vw;
-    height:100vh;
     flex-direction:column;
     justify-content:center;
     align-items:center;
+    height:100%;
     color:white;
     text-align:center;
-    z-index:4;
 }
 
 /* القلوب المتساقطة */
 .heart {
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     background: red;
     transform: rotate(-45deg);
     top: -20px;
     animation: fall linear;
-    z-index:6;
+    z-index:2;
 }
 
 .heart::before,
 .heart::after {
     content: "";
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     background: red;
     border-radius: 50%;
 }
 
 .heart::before {
-    top: -10px;
+    top: -7px;
     left: 0;
 }
 
 .heart::after {
     top: 0;
-    left: 10px;
+    left: 7px;
 }
 
 @keyframes fall {
     to {
-        transform: translateY(100vh) rotate(360deg);
+        transform: translateY(100%) rotate(360deg);
     }
 }
 </style>
@@ -217,22 +203,25 @@ button:hover {
 <audio id="bgMusic" src="100.mp3"></audio>
 
 <script>
-// التحقق من الباسورد وتشغيل الأغنية
+// التحقق من الباسورد وتشغيل الأغنية مباشرة عند الضغط
 function checkPassword() {
-    const correctPassword = "1234";
+    const correctPassword = "1234"; // غير الباسورد هنا
     const input = document.getElementById("password").value;
     if(input === correctPassword){
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("memories").style.display = "block";
-        document.getElementById("bgMusic").play();
+        const music = document.getElementById("bgMusic");
+        music.play();
     } else {
         document.getElementById("error").style.display = "block";
     }
 }
 
+// نصوص كل صورة (27 نص كامل)
 const captions = [
-    "ده اول استوري اكلمك عشان تبعتيهولي طبعًا مش عشان مش هاعرف اجيبو .عشان اكلمك بس ❤️ وطبعا انتي كنتي بارده وغلسه 😅 وبعتي الفديو 🎥 وسكتي على كده",
-    "ده بقي استوري حزين بصراحه عجبني 🙂 لان بحب عمار برضو نفس القصه 😂 قولتلك ابعتيلي الفديو وبرضو بعتيه وكنتي باره وماتكلمتيش 😒 فاخدت القرار اني ابدا انا ❤️❤️",
+const captions = [
+    "ده اول استوري اكلمك عشان تبعتيهولي طبعًا مش عشان مش هاعرف اجيبو .عشان اكلمك بس وطبعا انتي كنتي بارده وغلسه وبعتي الفديو وسكتي على كده",
+    "ده بقي استوري حزين بصراحه عجبني لان بحب عمار برضو نفس القصه قولتلك ابعتيلي الفديو وبرضو بعتيه وكنتي باره وماتكلمتيش فاخدت القرار اني ابدا انا ",
     "هنا بقي حسن الحنون اللي كان بيخاف عليكي وعلي تعبك",
     "هنا بقي منار اللي كانت بتحبني",
     "هنا بقي لما كنتي بتحبي تكلميني",
@@ -260,23 +249,22 @@ const captions = [
     "دي بقي الصوره الوحيده اللي لقيتها للاسف"
 ];
 
+];
+
 let currentIndex = 0;
 
-// عرض المعرض
 function showGallery() {
     document.getElementById("showGalleryBtn").style.display = "none";
     document.getElementById("gallery").style.display = "block";
     updateImage();
 }
 
-// تحديث الصورة والنص
 function updateImage() {
     const img = document.getElementById("memoryImg");
     img.src = (currentIndex+1) + ".jpeg";
     document.getElementById("caption").textContent = captions[currentIndex];
 }
 
-// الضغط على الصورة
 function imageClick(event) {
     const rect = event.target.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -295,18 +283,18 @@ function imageClick(event) {
     updateImage();
 }
 
-// إنشاء قلوب
+// القلوب
 function createHeart() {
     const heart = document.createElement('div');
     heart.classList.add('heart');
-    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.left = Math.random() * 360 + "px";
     heart.style.animationDuration = 3 + Math.random() * 2 + "s";
     document.body.appendChild(heart);
     setTimeout(() => { heart.remove(); }, 5000);
 }
-
 setInterval(createHeart, 150);
 </script>
 
 </body>
 </html>
+
