@@ -4,22 +4,24 @@
 <meta charset="UTF-8">
 <title>هدية ميرو</title>
 <style>
-body {
+html, body {
     margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #1a1a1a, #4b0082);
     color:white;
     text-align:center;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    overflow:hidden;
 }
 
 /* صفحة الباسورد */
 .login-box {
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     padding:40px 60px;
@@ -27,6 +29,7 @@ body {
     box-shadow: 0 15px 30px rgba(0,0,0,0.5);
     max-width:500px;
     text-align:center;
+    z-index:5;
 }
 
 .login-box h1 {
@@ -68,7 +71,11 @@ button:hover {
 #memories {
     display:none;
     text-align:center;
-    margin-top:30px;
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    z-index:5;
 }
 
 #memories button {
@@ -92,17 +99,19 @@ button:hover {
 /* المعرض */
 #gallery {
     display:none;
-    position: relative;
+    position: fixed; /* ثابت */
+    top:0;
+    left:0;
     width: 100vw;
     height: 100vh;
     text-align: center;
-    z-index:1;
+    z-index:2;
 }
 
 #gallery img {
-    width: 100vw;        
-    height: 100vh;       
-    object-fit: contain;  
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain; /* يحافظ على النسب بدون قص */
     cursor: pointer;
     user-select: none;
 }
@@ -110,10 +119,10 @@ button:hover {
 /* النص تحت الصورة */
 #caption {
     position: absolute;
-    bottom: 80px; /* مرفوع شوية عن الأسفل */
+    bottom: 80px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 16px; /* أصغر شوية */
+    font-size: 16px;
     color: #ffeb3b;
     background: rgba(0,0,0,0.5);
     padding: 8px 16px;
@@ -121,17 +130,23 @@ button:hover {
     max-width: 90%;
     word-wrap: break-word;
     white-space: normal;
+    z-index:3;
 }
 
 /* صفحة وداع */
 #goodbye {
     display:none;
+    position: fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    height:100vh;
     color:white;
     text-align:center;
+    z-index:4;
 }
 
 /* القلوب المتساقطة */
@@ -143,7 +158,7 @@ button:hover {
     transform: rotate(-45deg);
     top: -20px;
     animation: fall linear;
-    z-index:2;
+    z-index:6;
 }
 
 .heart::before,
@@ -202,23 +217,19 @@ button:hover {
 <audio id="bgMusic" src="100.mp3"></audio>
 
 <script>
-// التحقق من الباسورد وتشغيل الأغنية مباشرة عند الضغط
+// التحقق من الباسورد وتشغيل الأغنية
 function checkPassword() {
-    const correctPassword = "1234"; // غير الباسورد هنا
+    const correctPassword = "1234";
     const input = document.getElementById("password").value;
     if(input === correctPassword){
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("memories").style.display = "block";
-        
-        // تشغيل الأغنية مباشرة عند الضغط على "اتفضل"
-        const music = document.getElementById("bgMusic");
-        music.play();
+        document.getElementById("bgMusic").play();
     } else {
         document.getElementById("error").style.display = "block";
     }
 }
 
-// نصوص لكل صورة من 1.jpeg إلى 27.jpeg
 const captions = [
     "ده اول استوري اكلمك عشان تبعتيهولي طبعًا مش عشان مش هاعرف اجيبو .عشان اكلمك بس ❤️ وطبعا انتي كنتي بارده وغلسه 😅 وبعتي الفديو 🎥 وسكتي على كده",
     "ده بقي استوري حزين بصراحه عجبني 🙂 لان بحب عمار برضو نفس القصه 😂 قولتلك ابعتيلي الفديو وبرضو بعتيه وكنتي باره وماتكلمتيش 😒 فاخدت القرار اني ابدا انا ❤️❤️",
@@ -253,7 +264,7 @@ let currentIndex = 0;
 
 // عرض المعرض
 function showGallery() {
-    document.getElementById("showGalleryBtn").style.display = "none"; // إخفاء الزر
+    document.getElementById("showGalleryBtn").style.display = "none";
     document.getElementById("gallery").style.display = "block";
     updateImage();
 }
@@ -265,7 +276,7 @@ function updateImage() {
     document.getElementById("caption").textContent = captions[currentIndex];
 }
 
-// الضغط على الصورة: نصف يسار → التالي، نصف يمين → السابق
+// الضغط على الصورة
 function imageClick(event) {
     const rect = event.target.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -284,7 +295,7 @@ function imageClick(event) {
     updateImage();
 }
 
-// إنشاء قلوب متساقطة على كل الصفحة
+// إنشاء قلوب
 function createHeart() {
     const heart = document.createElement('div');
     heart.classList.add('heart');
@@ -294,8 +305,7 @@ function createHeart() {
     setTimeout(() => { heart.remove(); }, 5000);
 }
 
-// القلوب تبدأ من أول الصفحة وتستمر
-setInterval(createHeart, 150); 
+setInterval(createHeart, 150);
 </script>
 
 </body>
